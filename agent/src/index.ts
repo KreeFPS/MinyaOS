@@ -52,6 +52,7 @@ import { solanaPlugin } from "@ai16z/plugin-solana";
 import { suiPlugin } from "@ai16z/plugin-sui";
 import { TEEMode, teePlugin } from "@ai16z/plugin-tee";
 import { tonPlugin } from "@ai16z/plugin-ton";
+import { thirdwebPlugin } from "@ai16z/plugin-thirdweb";
 import { zksyncEraPlugin } from "@ai16z/plugin-zksync-era";
 import Database from "better-sqlite3";
 import fs from "fs";
@@ -548,6 +549,7 @@ export async function createAgent(
             getSecret(character, "MVX_PRIVATE_KEY") ? multiversxPlugin : null,
             getSecret(character, "ZKSYNC_PRIVATE_KEY") ? zksyncEraPlugin : null,
             getSecret(character, "TON_PRIVATE_KEY") ? tonPlugin : null,
+            getSecret(character, "THIRDWEB_SECRET_KEY") ? thirdwebPlugin : null,
             getSecret(character, "SUI_PRIVATE_KEY") ? suiPlugin : null,
             getSecret(character, "STORY_PRIVATE_KEY") ? storyPlugin : null,
         ].filter(Boolean),
