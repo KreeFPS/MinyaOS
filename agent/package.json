@@ -1,6 +1,6 @@
 {
-    "name": "@ai16z/agent",
-    "version": "0.1.6-alpha.4",
+    "name": "@elizaos/agent",
+    "version": "0.1.7-alpha.1",
     "main": "src/index.ts",
     "type": "module",
     "scripts": {
