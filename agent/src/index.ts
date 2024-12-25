@@ -73,8 +73,7 @@ export const wait = (minTime: number = 1000, maxTime: number = 3000) => {
 
 const logFetch = async (url: string, options: any) => {
     elizaLogger.debug(`Fetching ${url}`);
-    // Disabled to avoid disclosure of sensitive information such as API keys
-    // elizaLogger.debug(JSON.stringify(options, null, 2));
+    elizaLogger.debug(JSON.stringify(options, null, 2));
     return fetch(url, options);
 };
 
@@ -213,15 +212,8 @@ export async function loadCharacters(
 export function getTokenForProvider(
     provider: ModelProviderName,
     character: Character
-): string {
+) {
     switch (provider) {
-        // no key needed for llama_local or gaianet
-        case ModelProviderName.LLAMALOCAL:
-            return "";
-        case ModelProviderName.OLLAMA:
-            return "";
-        case ModelProviderName.GAIANET:
-            return "";
         case ModelProviderName.OPENAI:
             return (
                 character.settings?.secrets?.OPENAI_API_KEY ||
@@ -244,7 +236,6 @@ export function getTokenForProvider(
                 character.settings?.secrets?.OPENAI_API_KEY ||
                 settings.OPENAI_API_KEY
             );
-        case ModelProviderName.CLAUDE_VERTEX:
         case ModelProviderName.ANTHROPIC:
             return (
                 character.settings?.secrets?.ANTHROPIC_API_KEY ||
@@ -316,15 +307,6 @@ export function getTokenForProvider(
                 character.settings?.secrets?.AKASH_CHAT_API_KEY ||
                 settings.AKASH_CHAT_API_KEY
             );
-        case ModelProviderName.GOOGLE:
-            return (
-                character.settings?.secrets?.GOOGLE_GENERATIVE_AI_API_KEY ||
-                settings.GOOGLE_GENERATIVE_AI_API_KEY
-            );
-        default:
-            const errorMessage = `Failed to get token - unsupported model provider: ${provider}`;
-            elizaLogger.error(errorMessage);
-            throw new Error(errorMessage);
     }
 }
 
@@ -409,22 +391,27 @@ export async function initializeClients(
         clients.lens = lensClient;
     }
 
+    if (clientTypes.includes(Clients.REDDIT)) {
+        const redditClient = await RedditClientInterface.start(runtime);
+        if (redditClient) {
+            clients.reddit = redditClient;
+        }
+    }
+
     elizaLogger.log("client keys", Object.keys(clients));
 
     // TODO: Add Slack client to the list
-    // Initialize clients as an object
-
     if (clientTypes.includes("slack")) {
         const slackClient = await SlackClientInterface.start(runtime);
-        if (slackClient) clients.slack = slackClient; // Use object property instead of push
+        if (slackClient) clients.push(slackClient);
     }
 
     if (character.plugins?.length > 0) {
         for (const plugin of character.plugins) {
+            // if plugin has clients, add those..
             if (plugin.clients) {
                 for (const client of plugin.clients) {
-                    const startedClient = await client.start(runtime);
-                    clients[client.name] = startedClient; // Assuming client has a name property
+                    clients.push(await client.start(runtime));
                 }
             }
         }
@@ -594,48 +581,9 @@ function initializeDbCache(character: Character, db: IDatabaseCacheAdapter) {
     return cache;
 }
 
-function initializeCache(
-    cacheStore: string,
-    character: Character,
-    baseDir?: string,
-    db?: IDatabaseCacheAdapter
-) {
-    switch (cacheStore) {
-        case CacheStore.REDIS:
-            if (process.env.REDIS_URL) {
-                elizaLogger.info("Connecting to Redis...");
-                const redisClient = new RedisClient(process.env.REDIS_URL);
-                return new CacheManager(
-                    new DbCacheAdapter(redisClient, character.id) // Using DbCacheAdapter since RedisClient also implements IDatabaseCacheAdapter
-                );
-            } else {
-                throw new Error("REDIS_URL environment variable is not set.");
-            }
-
-        case CacheStore.DATABASE:
-            if (db) {
-                elizaLogger.info("Using Database Cache...");
-                return initializeDbCache(character, db);
-            } else {
-                throw new Error(
-                    "Database adapter is not provided for CacheStore.Database."
-                );
-            }
-
-        case CacheStore.FILESYSTEM:
-            elizaLogger.info("Using File System Cache...");
-            return initializeFsCache(baseDir, character);
-
-        default:
-            throw new Error(
-                `Invalid cache store: ${cacheStore} or required configuration missing.`
-            );
-    }
-}
-
 async function startAgent(
     character: Character,
-    directClient: DirectClient
+    directClient
 ): Promise<AgentRuntime> {
     let db: IDatabaseAdapter & IDatabaseCacheAdapter;
     try {
@@ -654,12 +602,7 @@ async function startAgent(
 
         await db.init();
 
-        const cache = initializeCache(
-            process.env.CACHE_STORE ?? CacheStore.DATABASE,
-            character,
-            "",
-            db
-        ); // "" should be replaced with dir for file system caching. THOUGHTS: might probably make this into an env
+        const cache = initializeDbCache(character, db);
         const runtime: AgentRuntime = await createAgent(
             character,
             db,
@@ -715,15 +658,14 @@ const startAgents = async () => {
     }
 
     // upload some agent functionality into directClient
-    directClient.startAgent = async (character: Character) => {
-        // wrap it so we don't have to inject directClient later
-        return startAgent(character, directClient);
+    directClient.startAgent = async character => {
+      // wrap it so we don't have to inject directClient later
+      return startAgent(character, directClient)
     };
     directClient.start(serverPort);
 
-    elizaLogger.log(
-        "Run `pnpm start:client` to start the client and visit the outputted URL (http://localhost:5173) to chat with your agents"
-    );
+    elizaLogger.log("Visit the following URL to chat with your agents:");
+    elizaLogger.log(`http://localhost:5173`);
 };
 
 startAgents().catch((error) => {
