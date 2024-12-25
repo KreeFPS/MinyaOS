@@ -40,22 +40,23 @@ import {
     tokenContractPlugin,
     tradePlugin,
     webhookPlugin,
-} from "@ai16z/plugin-coinbase";
-import { confluxPlugin } from "@ai16z/plugin-conflux";
-import { evmPlugin } from "@ai16z/plugin-evm";
-import { storyPlugin } from "@ai16z/plugin-story";
-import { flowPlugin } from "@ai16z/plugin-flow";
-import { imageGenerationPlugin } from "@ai16z/plugin-image-generation";
-import { multiversxPlugin } from "@ai16z/plugin-multiversx";
-import { nearPlugin } from "@ai16z/plugin-near";
-import { nftGenerationPlugin } from "@ai16z/plugin-nft-generation";
-import { createNodePlugin } from "@ai16z/plugin-node";
-import { solanaPlugin } from "@ai16z/plugin-solana";
-import { suiPlugin } from "@ai16z/plugin-sui";
-import { TEEMode, teePlugin } from "@ai16z/plugin-tee";
-import { tonPlugin } from "@ai16z/plugin-ton";
+} from "@elizaos/plugin-coinbase";
+import { confluxPlugin } from "@elizaos/plugin-conflux";
+import { evmPlugin } from "@elizaos/plugin-evm";
+import { storyPlugin } from "@elizaos/plugin-story";
+import { flowPlugin } from "@elizaos/plugin-flow";
+import { imageGenerationPlugin } from "@elizaos/plugin-image-generation";
+import { multiversxPlugin } from "@elizaos/plugin-multiversx";
+import { nearPlugin } from "@elizaos/plugin-near";
+import { nftGenerationPlugin } from "@elizaos/plugin-nft-generation";
+import { createNodePlugin } from "@elizaos/plugin-node";
+import { solanaPlugin } from "@elizaos/plugin-solana";
+import { suiPlugin } from "@elizaos/plugin-sui";
+import { TEEMode, teePlugin } from "@elizaos/plugin-tee";
+import { tonPlugin } from "@elizaos/plugin-ton";
+import { zksyncEraPlugin } from "@elizaos/plugin-zksync-era";
+import { abstractPlugin } from "@elizaos/plugin-abstract";
 import { thirdwebPlugin } from "@ai16z/plugin-thirdweb";
-import { zksyncEraPlugin } from "@ai16z/plugin-zksync-era";
 import Database from "better-sqlite3";
 import fs from "fs";
 import path from "path";
@@ -387,12 +388,8 @@ export async function initializeClients(
 
     if (clientTypes.includes(Clients.TWITTER)) {
         const twitterClient = await TwitterClientInterface.start(runtime);
-
         if (twitterClient) {
             clients.twitter = twitterClient;
-            (twitterClient as any).enableSearch = !isFalsish(
-                getSecret(character, "TWITTER_SEARCH_ENABLE")
-            );
         }
     }
 
@@ -432,31 +429,6 @@ export async function initializeClients(
     }
 
     return clients;
-}
-
-function isFalsish(input: any): boolean {
-    // If the input is exactly NaN, return true
-    if (Number.isNaN(input)) {
-        return true;
-    }
-
-    // Convert input to a string if it's not null or undefined
-    const value = input == null ? "" : String(input);
-
-    // List of common falsish string representations
-    const falsishValues = [
-        "false",
-        "0",
-        "no",
-        "n",
-        "off",
-        "null",
-        "undefined",
-        "",
-    ];
-
-    // Check if the value (trimmed and lowercased) is in the falsish list
-    return falsishValues.includes(value.trim().toLowerCase());
 }
 
 function getSecret(character: Character, secret: string) {
@@ -563,6 +535,9 @@ export async function createAgent(
                 ? webhookPlugin
                 : null,
             getSecret(character, "EVM_PROVIDER_URL") ? goatPlugin : null,
+            getSecret(character, "ABSTRACT_PRIVATE_KEY")
+                ? abstractPlugin
+                : null,
             getSecret(character, "FLOW_ADDRESS") &&
             getSecret(character, "FLOW_PRIVATE_KEY")
                 ? flowPlugin
