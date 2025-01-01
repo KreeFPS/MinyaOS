@@ -1,3 +1,13 @@
+import { PostgresDatabaseAdapter } from "@ai16z/adapter-postgres";
+import { SqliteDatabaseAdapter } from "@ai16z/adapter-sqlite";
+import { AutoClientInterface } from "@ai16z/client-auto";
+import { DiscordClientInterface } from "@ai16z/client-discord";
+import { FarcasterAgentClient } from "@ai16z/client-farcaster";
+import { LensAgentClient } from "@ai16z/client-lens";
+import { SlackClientInterface } from "@ai16z/client-slack";
+import { TelegramClientInterface } from "@ai16z/client-telegram";
+import { TwitterClientInterface } from "@ai16z/client-twitter";
+import { WordpressClientInterface } from "@ai16z/client-wordpress";
 import { PostgresDatabaseAdapter } from "@elizaos/adapter-postgres";
 import { SqliteDatabaseAdapter } from "@elizaos/adapter-sqlite";
 import { AutoClientInterface } from "@elizaos/client-auto";
@@ -414,6 +424,11 @@ export async function initializeClients(
         if (twitterClient) {
             clients.twitter = twitterClient;
         }
+    }
+
+    if (clientTypes.includes(Clients.WORDPRESS)) {
+        const wordpressClient = await WordpressClientInterface.start(runtime);
+        clients.push(wordpressClient);
     }
 
     if (clientTypes.includes(Clients.FARCASTER)) {
