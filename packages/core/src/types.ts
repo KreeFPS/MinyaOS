@@ -873,7 +873,7 @@ export interface IDatabaseAdapter {
         roomId: UUID;
         count?: number;
         unique?: boolean;
-        tableName: string;
+        memoryType: string;
         agentId: UUID;
         start?: number;
         end?: number;
@@ -882,7 +882,7 @@ export interface IDatabaseAdapter {
     getMemoryById(id: UUID): Promise<Memory | null>;
 
     getMemoriesByRoomIds(params: {
-        tableName: string;
+        memoryType: string;
         agentId: UUID;
         roomIds: UUID[];
     }): Promise<Memory[]>;
@@ -906,7 +906,7 @@ export interface IDatabaseAdapter {
     getActorDetails(params: { roomId: UUID }): Promise<Actor[]>;
 
     searchMemories(params: {
-        tableName: string;
+        memoryType: string;
         agentId: UUID;
         roomId: UUID;
         embedding: number[];
@@ -928,24 +928,24 @@ export interface IDatabaseAdapter {
             roomId?: UUID;
             agentId?: UUID;
             unique?: boolean;
-            tableName: string;
+            memoryType: string;
         }
     ): Promise<Memory[]>;
 
     createMemory(
         memory: Memory,
-        tableName: string,
+        memoryType: string,
         unique?: boolean
     ): Promise<void>;
 
-    removeMemory(memoryId: UUID, tableName: string): Promise<void>;
+    removeMemory(memoryId: UUID, memoryType: string): Promise<void>;
 
-    removeAllMemories(roomId: UUID, tableName: string): Promise<void>;
+    removeAllMemories(roomId: UUID, memoryType: string): Promise<void>;
 
     countMemories(
         roomId: UUID,
         unique?: boolean,
-        tableName?: string
+        memoryType?: string
     ): Promise<number>;
 
     getGoals(params: {
@@ -1020,7 +1020,7 @@ export interface IDatabaseCacheAdapter {
 
 export interface IMemoryManager {
     runtime: IAgentRuntime;
-    tableName: string;
+    memoryType: string;
     constructor: Function;
 
     addEmbeddingToMemory(memory: Memory): Promise<Memory>;
