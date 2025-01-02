@@ -2,7 +2,7 @@ import {
     composeContext,
     generateImage,
     generateText,
-    generateObjectDeprecated,
+    generateObject,
 } from "@elizaos/core";
 import {
     ActionExample,
@@ -148,7 +148,7 @@ export const executeCreateToken: Action = {
             template: createTokenTemplate,
         });
 
-        const response = await generateObjectDeprecated({
+        const response = await generateObject({
             runtime,
             context: createTokenContext,
             modelClass: ModelClass.LARGE,
