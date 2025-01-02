@@ -1,141 +1,119 @@
-import {
-    Action,
-    IAgentRuntime,
-    Memory,
-    State,
-    HandlerCallback,
-} from "@elizaos/core";
-import {
-    generateObject,
-    composeContext,
-    ModelClass,
-    Content,
-} from "@elizaos/core";
+import type { Action, ActionExample, Memory } from "@elizaos/core";
 import { createPublicClient, createWalletClient, http, parseCFX } from "cive";
 import { privateKeyToAccount } from "cive/accounts";
-import { testnet } from "cive/chains";
-import { confluxTransferTemplate } from "../templates/transfer";
-import { TransferSchema, isTransferContent } from "../types";
+import { mainnet, testnet } from "cive/chains";
 
-const sendCFX = async (
-    secretKey: `0x${string}`,
-    rpcUrl: string,
-    to: string,
-    amount: string
-) => {
-    const client = createPublicClient({
-        transport: http(rpcUrl),
-    });
-    const networkId = await client.getChainId();
-    const account = privateKeyToAccount(secretKey, { networkId });
-
-    const walletClient = createWalletClient({
-        transport: http(rpcUrl),
-        chain: testnet,
-    });
-
-    const hash = await walletClient.sendTransaction({
-        account,
-        to,
-        value: parseCFX(amount),
-        chain: testnet,
-    });
-
-    // await client.waitForTransactionReceipt({
-    //     hash,
-    // });
-    return hash;
-};
+interface TransferEntities {
+    amount?: string | number;
+    to?: string;
+}
 
 export const transfer: Action = {
-    name: "SEND_CFX",
-    description:
-        "Transfer CFX to another address in Conflux Core Space. The address starts with `cfx:` or `cfxtest:`",
-    similes: ["SEND_CONFLUX", "SEND_CFX_CORE_SPACE", "TRANSFER_CFX"],
+    name: "SEND_CFX_CORE",
+    description: "Send CFX on Conflux Core network",
     examples: [
         [
             {
-                user: "{{user1}}",
+                user: "user1",
                 content: {
-                    text: "Send 1 CFX to cfx:aaejuaaaaaaaaaaaaaaaaaaaaaaaaaaaa2eaeg85p5",
+                    text: "Send 0.1 CFX to cfx:aap... on Core",
+                    entities: {
+                        amount: "0.1",
+                        to: "cfx:aap61confz1f3hvvz0642yjj8rauc9pg0r663850f9",
+                    },
                 },
             },
             {
-                user: "{{user2}}",
+                user: "assistant",
                 content: {
-                    text: "1 CFX sent to cfx:aaejuaaaaaaaaaaaaaaaaaaaaaaaaaaaa2eaeg85p5: 0x1234567890abcdef",
-                    content: {
-                        to: "cfx:aaejuaaaaaaaaaaaaaaaaaaaaaaaaaaaa2eaeg85p5",
-                        amount: "1",
-                    },
+                    text: "Transaction sent on Core! Hash: 0x123...",
                 },
             },
         ],
     ],
-    validate: async (runtime: IAgentRuntime, message: Memory) => {
-        // no extra validation needed
-        return true;
-    },
-    handler: async (
-        runtime: IAgentRuntime,
-        message: Memory,
-        state?: State,
-        options?: { [key: string]: unknown },
-        callback?: HandlerCallback
-    ) => {
-        if (!state) {
-            state = (await runtime.composeState(message)) as State;
-        } else {
-            state = await runtime.updateRecentMessageState(state);
+    handler: async (runtime, message: Memory, state, options, callback) => {
+        // Extract entities from the message
+        const content = message.content?.text?.match(
+            /Send ([\d.]+) CFX to (cfx:[a-z0-9]+) on Core/i
+        );
+        if (!content) {
+            callback?.({
+                text: "Could not parse transfer details. Please use format: Send <amount> CFX to <address> on Core",
+            });
+            return false;
         }
 
-        const context = composeContext({
-            state,
-            template: confluxTransferTemplate,
-        });
+        const amount = content[1];
+        const to = content[2];
 
-        const content = await generateObject({
-            runtime,
-            context,
-            modelClass: ModelClass.SMALL,
-            schema: TransferSchema,
-        });
-
-        if (!isTransferContent(content.object)) {
-            throw new Error("Invalid content");
+        // Validate address - must be a cfx: prefixed address
+        if (!to.startsWith("cfx:")) {
+            callback?.({
+                text: `Invalid Core address format. Address must start with 'cfx:'.`,
+            });
+            return false;
         }
-
-        const secretKey = runtime.getSetting(
-            "CONFLUX_CORE_PRIVATE_KEY"
-        ) as `0x${string}`;
-        const rpcUrl = runtime.getSetting("CONFLUX_CORE_SPACE_RPC_URL");
-
-        let success = false;
 
         try {
-            const hash = await sendCFX(
-                secretKey,
-                rpcUrl,
-                content.object.to,
-                content.object.amount.toString()
+            const settings = Object.fromEntries(
+                Object.entries(process.env).filter(([key]) =>
+                    key.startsWith("CONFLUX_")
+                )
             );
-            success = true;
-            if (!callback) {
-                return success;
+
+            const privateKey = settings.CONFLUX_CORE_PRIVATE_KEY;
+            if (!privateKey) {
+                callback?.({
+                    text: "Core wallet not configured. Please set CONFLUX_CORE_PRIVATE_KEY.",
+                });
+                return false;
             }
-            callback({
-                text: `${content.object.amount} CFX sent to ${content.object.to}: ${hash}`,
-                content: content.object,
+
+            const rpcUrl =
+                settings.CONFLUX_CORE_SPACE_RPC_URL ||
+                "https://main.confluxrpc.com";
+
+            // Determine network from RPC URL or address prefix
+            const isTestnet =
+                rpcUrl.includes("test") || to.startsWith("cfxtest:");
+            const chain = isTestnet ? testnet : mainnet;
+            const networkId = isTestnet ? 1 : 1029;
+
+            const account = privateKeyToAccount(privateKey as `0x${string}`, {
+                networkId,
             });
+
+            const client = createWalletClient({
+                account,
+                chain,
+                transport: http(rpcUrl),
+            });
+
+            const hash = await client.sendTransaction({
+                account,
+                to,
+                value: parseCFX(amount),
+                chain,
+            });
+
+            callback?.({
+                text: `Transaction sent on Core! Hash: ${hash}`,
+                content: { hash },
+            });
+            return true;
         } catch (error) {
-            console.error(`Error sending CFX: ${error}`);
-            if (!callback) {
-                return success;
-            }
-            callback({
-                text: `Failed to send ${content.object.amount} CFX to ${content.object.to}: ${error}`,
+            console.error("Failed to send CFX on Core network:", error);
+            callback?.({
+                text: `Failed to send ${amount} CFX to ${to} on Core network: ${error.message}`,
+                content: { error: error.message },
             });
+            return false;
         }
-        return success;
     },
+    validate: async () => true,
+    similes: [
+        "like sending a digital letter through the Core network",
+        "like making an instant transfer in the Core space",
+        "like beaming CFX through the Core network",
+    ],
 };

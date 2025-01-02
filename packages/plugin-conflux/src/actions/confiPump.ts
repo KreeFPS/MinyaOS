@@ -84,33 +84,31 @@ async function ensureAllowance(
 
 // Main ConfiPump action definition
 export const confiPump: Action = {
-    name: "CONFI_PUMP",
+    name: "CONFI_PUMP_ESPACE",
     description:
-        "Perform actions on ConfiPump, for example create a new token, buy a token, or sell a token.",
-    similes: ["SELL_TOKEN", "BUY_TOKEN", "CREATE_TOKEN"],
+        "Perform actions on ConfiPump on Conflux eSpace network. Create, buy, or sell tokens on the eSpace network.",
+    similes: ["SELL_TOKEN_ESPACE", "BUY_TOKEN_ESPACE", "CREATE_TOKEN_ESPACE"],
     examples: [
         // Create token example
         [
             {
                 user: "{{user1}}",
                 content: {
-                    text: "Create a new token called GLITCHIZA with symbol GLITCHIZA and generate a description about it.",
+                    text: "Create a new token called GLITCHIZA with symbol GLITCHIZA and generate a description about it on eSpace",
                 },
             },
             {
                 user: "{{user2}}",
                 content: {
-                    text: "Token GLITCHIZA (GLITCHIZA) created successfully!\nContract Address: 0x1234567890abcdef\n",
-                    action: "CREATE_TOKEN",
+                    text: "Token GLITCHIZA (GLITCHIZA) created successfully on eSpace network!\nContract Address: 0x1234567890abcdef\n",
+                    action: "CREATE_TOKEN_ESPACE",
                     content: {
                         tokenInfo: {
                             symbol: "GLITCHIZA",
-                            address:
-                                "EugPwuZ8oUMWsYHeBGERWvELfLGFmA1taDtmY8uMeX6r",
-                            creator:
-                                "9jW8FPr6BSSsemWPV22UUCzSqkVdTp6HTyPqeqyuBbCa",
+                            address: "0x1234567890abcdef",
+                            creator: "0x9876543210fedcba",
                             name: "GLITCHIZA",
-                            description: "A GLITCHIZA token",
+                            description: "A GLITCHIZA token on Conflux eSpace",
                         },
                         amount: "1",
                     },
@@ -122,14 +120,14 @@ export const confiPump: Action = {
             {
                 user: "{{user1}}",
                 content: {
-                    text: "Buy 0.00069 CFX worth of GLITCHIZA(0x1234567890abcdef)",
+                    text: "Buy 0.00069 CFX worth of GLITCHIZA(0x1234567890abcdef) on eSpace",
                 },
             },
             {
                 user: "{{user2}}",
                 content: {
-                    text: "0.00069 CFX bought successfully!",
-                    action: "BUY_TOKEN",
+                    text: "0.00069 CFX bought successfully on eSpace network!",
+                    action: "BUY_TOKEN_ESPACE",
                     content: {
                         address: "0x1234567890abcdef",
                         amount: "0.00069",
@@ -142,14 +140,14 @@ export const confiPump: Action = {
             {
                 user: "{{user1}}",
                 content: {
-                    text: "Sell 0.00069 CFX worth of GLITCHIZA(0x1234567890abcdef)",
+                    text: "Sell 0.00069 CFX worth of GLITCHIZA(0x1234567890abcdef) on eSpace",
                 },
             },
             {
                 user: "{{user2}}",
                 content: {
-                    text: "0.00069 CFX sold successfully: 0x1234567890abcdef",
-                    action: "SELL_TOKEN",
+                    text: "0.00069 CFX sold successfully on eSpace network: 0x1234567890abcdef",
+                    action: "SELL_TOKEN_ESPACE",
                     content: {
                         address: "0x1234567890abcdef",
                         amount: "0.00069",

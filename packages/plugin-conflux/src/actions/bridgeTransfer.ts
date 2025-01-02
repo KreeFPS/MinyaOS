@@ -1,4 +1,4 @@
-import {
+import type {
     Action,
     IAgentRuntime,
     Memory,
@@ -20,7 +20,7 @@ import {
 } from "cive";
 import { hexAddressToBase32 } from "cive/utils";
 import { privateKeyToAccount } from "cive/accounts";
-import { testnet } from "cive/chains";
+import { mainnet } from "cive/chains";
 import { confluxBridgeTransferTemplate } from "../templates/bridgeTransfer";
 import { TransferSchema, isTransferContent } from "../types";
 import CrossSpaceCallAbi from "../abi/crossSpaceCall";
@@ -39,7 +39,7 @@ const bridgeSendCFX = async (
 
     const walletClient = createWalletClient({
         transport: http(rpcUrl),
-        chain: testnet,
+        chain: mainnet,
     });
 
     const toAddress = hexAddressToBase32({
@@ -51,7 +51,7 @@ const bridgeSendCFX = async (
         account,
         to: toAddress,
         value: parseCFX(amount),
-        chain: testnet,
+        chain: mainnet,
         data: encodeFunctionData({
             abi: CrossSpaceCallAbi,
             functionName: "transferEVM",
