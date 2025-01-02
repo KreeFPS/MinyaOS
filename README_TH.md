@@ -34,7 +34,7 @@
 ### สิ่งที่จำเป็นก่อนเริ่มใช้งาน
 
 - [Python 2.7+](https://www.python.org/downloads/)
-- [Node.js 23+](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+- [Node.js 22+](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 - [pnpm](https://pnpm.io/installation)
 
 > **หมายเหตุสำหรับผู้ใช้ Windows:** จำเป็นต้องมี [WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install-manual)

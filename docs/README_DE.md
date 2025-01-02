@@ -25,7 +25,7 @@ _Wie gesehen bei [@DegenSpartanAI](https://x.com/degenspartanai) und [@MarcAIndr
 
 **Voraussetzungen (ERFORDERLICH):**
 
-- [Node.js 23+](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+- [Node.js 22+](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 - [pnpm](https://pnpm.io/installation)
 
 ### .env-Datei bearbeiten

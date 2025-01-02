@@ -25,7 +25,7 @@ _ดังที่เห็นขับเคลื่อนเเละถู�
 
 **ข้อกำหนดเบื้องต้น (ต้องมี):**
 
-- [Node.js 23+](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+- [Node.js 22+](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 - [pnpm](https://pnpm.io/installation)
 
 ### แก้ไขไฟล์ .env

@@ -29,7 +29,7 @@ _As seen powering [@DegenSpartanAI](https://x.com/degenspartanai) and [@MarcAInd
 
 **Prerequisites (MUST):**
 
-- [Node.js 23+](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+- [Node.js 22+](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 - [pnpm](https://pnpm.io/installation)
 
 ### Edit the .env file

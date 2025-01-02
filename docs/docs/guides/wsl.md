@@ -45,8 +45,8 @@ sudo apt install -y \
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 source ~/.bashrc
-nvm install 23
-nvm use 23
+nvm install 22
+nvm use 22
 ```
 
 4. Install pnpm:

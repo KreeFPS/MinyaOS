@@ -8,7 +8,7 @@ sidebar_position: 2
 
 Before getting started with Eliza, ensure you have:
 
-- [Node.js 23+](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+- [Node.js 22+](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 - [pnpm 9+](https://pnpm.io/installation)
 - Git for version control
 - A code editor ([VS Code](https://code.visualstudio.com/) or [VSCodium](https://vscodium.com) recommended)
@@ -215,13 +215,13 @@ pnpm start --characters="characters/trump.character.json,characters/tate.charact
 
 1. **Node.js Version**
 
-   - Ensure Node.js 23.3.0 is installed
+   - Ensure Node.js 22.12.0 is installed
    - Use `node -v` to check version
    - Consider using [nvm](https://github.com/nvm-sh/nvm) to manage Node versions
 
    NOTE: pnpm may be bundled with a different node version, ignoring nvm. If this is the case, you can use
    ```bash
-   pnpm env use --global 23.3.0
+   pnpm env use --global 22.12.0
    ```
    to force it to use the correct one.
 
