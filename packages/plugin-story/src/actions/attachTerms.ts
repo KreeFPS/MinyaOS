@@ -1,7 +1,7 @@
 import {
     composeContext,
     elizaLogger,
-    generateObjectDeprecated,
+    generateObject,
     HandlerCallback,
     ModelClass,
     IAgentRuntime,
@@ -98,7 +98,7 @@ export const attachTermsAction = {
             template: attachTermsTemplate,
         });
 
-        const content = await generateObjectDeprecated({
+        const content = await generateObject({
             runtime,
             context: attachTermsContext,
             modelClass: ModelClass.SMALL,
