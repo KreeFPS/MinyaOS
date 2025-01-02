@@ -23,7 +23,7 @@ import {
 } from "@elizaos/core";
 import { composeContext } from "@elizaos/core";
 import { getWalletKey } from "../keypairUtils";
-import { generateObjectDeprecated } from "@elizaos/core";
+import { generateObject } from "@elizaos/core";
 
 export interface TransferContent extends Content {
     tokenAddress: string;
@@ -118,7 +118,7 @@ export default {
         });
 
         // Generate transfer content
-        const content = await generateObjectDeprecated({
+        const content = await generateObject({
             runtime,
             context: transferContext,
             modelClass: ModelClass.LARGE,
