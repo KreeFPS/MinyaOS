@@ -14,7 +14,7 @@ import {
     Memory,
     ModelClass,
     State,
-    generateObjectDeprecated,
+    generateObject,
     composeContext,
     type Action,
 } from "@elizaos/core";
@@ -302,7 +302,7 @@ export default {
             template: pumpfunTemplate,
         });
 
-        const content = await generateObjectDeprecated({
+        const content = await generateObject({
             runtime,
             context: pumpContext,
             modelClass: ModelClass.LARGE,
