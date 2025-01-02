@@ -11,7 +11,6 @@ import {
 import { Buffer } from "buffer";
 import { createOllama } from "ollama-ai-provider";
 import OpenAI from "openai";
-import { encodingForModel, TiktokenModel } from "js-tiktoken";
 import Together from "together-ai";
 import { ZodSchema } from "zod";
 import { elizaLogger } from "./index.ts";
@@ -34,6 +33,7 @@ import {
     ServiceType,
     SearchResponse,
     ActionResponse,
+    ITokenizationService,
     TelemetrySettings,
 } from "./types.ts";
 import { fal } from "@fal-ai/client";
@@ -176,7 +176,15 @@ export async function generateText({
         elizaLogger.debug(
             `Trimming context to max length of ${max_context_length} tokens.`
         );
-        context = await trimTokens(context, max_context_length, "gpt-4o");
+        const tokenizationService = runtime.getService<ITokenizationService>(
+            ServiceType.TOKENIZATION
+        );
+
+        context = await tokenizationService.trimTokens(
+            context,
+            max_context_length,
+            model
+        );
 
         let response: string;
 
@@ -604,45 +612,6 @@ export async function generateText({
 }
 
 /**
- * Truncate the context to the maximum length allowed by the model.
- * @param context The text to truncate
- * @param maxTokens Maximum number of tokens to keep
- * @param model The tokenizer model to use
- * @returns The truncated text
- */
-export function trimTokens(
-    context: string,
-    maxTokens: number,
-    model: TiktokenModel
-): string {
-    if (!context) return "";
-    if (maxTokens <= 0) throw new Error("maxTokens must be positive");
-
-    // Get the tokenizer for the model
-    const encoding = encodingForModel(model);
-
-    try {
-        // Encode the text into tokens
-        const tokens = encoding.encode(context);
-
-        // If already within limits, return unchanged
-        if (tokens.length <= maxTokens) {
-            return context;
-        }
-
-        // Keep the most recent tokens by slicing from the end
-        const truncatedTokens = tokens.slice(-maxTokens);
-
-        // Decode back to text - js-tiktoken decode() returns a string directly
-        return encoding.decode(truncatedTokens);
-    } catch (error) {
-        console.error("Error in trimTokens:", error);
-        // Return truncated string if tokenization fails
-        return context.slice(-maxTokens * 4); // Rough estimate of 4 chars per token
-    }
-}
-
-/**
  * Sends a message to the model to determine if it should respond to the given context.
  * @param opts - The options for the generateText request
  * @param opts.context The context to evaluate for response
@@ -923,9 +892,19 @@ export async function generateMessageResponse({
     context: string;
     modelClass: string;
 }): Promise<Content> {
-    const max_context_length =
-        models[runtime.modelProvider].settings.maxInputTokens;
-    context = trimTokens(context, max_context_length, "gpt-4o");
+    const provider = runtime.modelProvider;
+    const model = models[provider].model[modelClass];
+    const max_context_length = models[provider].settings.maxInputTokens;
+
+    const tokenizationService = runtime.getService<ITokenizationService>(
+        ServiceType.TOKENIZATION
+    );
+
+    context = await tokenizationService.trimTokens(
+        context,
+        max_context_length,
+        model
+    );
     let retryLength = 1000; // exponential backoff
     while (true) {
         try {
@@ -1393,10 +1372,7 @@ export const generateObject = async ({
     }
 
     const provider = runtime.modelProvider;
-    const model = models[provider].model[modelClass] as TiktokenModel;
-    if (!model) {
-        throw new Error(`Unsupported model class: ${modelClass}`);
-    }
+    const model = models[provider].model[modelClass];
     const temperature = models[provider].settings.temperature;
     const frequency_penalty = models[provider].settings.frequency_penalty;
     const presence_penalty = models[provider].settings.presence_penalty;
@@ -1406,7 +1382,15 @@ export const generateObject = async ({
     const apiKey = runtime.token;
 
     try {
-        context = trimTokens(context, max_context_length, model);
+        const tokenizationService = runtime.getService<ITokenizationService>(
+            ServiceType.TOKENIZATION
+        );
+
+        context = await tokenizationService.trimTokens(
+            context,
+            max_context_length,
+            model
+        );
 
         const modelOptions: ModelSettings = {
             prompt: context,
