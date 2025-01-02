@@ -9,7 +9,7 @@ import {
     State,
     type Action,
     composeContext,
-    generateObjectDeprecated,
+    generateObject,
     Content,
     elizaLogger,
 } from "@elizaos/core";
@@ -107,7 +107,7 @@ export default {
         });
 
         // Generate transfer content
-        const content = await generateObjectDeprecated({
+        const content = await generateObject({
             runtime,
             context: transferContext,
             modelClass: ModelClass.MEDIUM,
