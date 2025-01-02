@@ -1226,6 +1226,25 @@ export interface IAwsS3Service extends Service {
     generateSignedUrl(fileName: string, expiresIn: number): Promise<string>;
 }
 
+
+export interface UploadIrysResult {
+    success: boolean;
+    url?: string;
+    error?: string;
+}
+
+export interface DataIrysFetchedFromGQL {
+    success: boolean;
+    data: any;
+    error?: string;
+}
+
+export interface IIrysService extends Service {
+    uploadDataOnIrys(data: any): Promise<UploadIrysResult>;
+    getDataFromAnAgent(agentsWalletPublicKeys: string[]): Promise<DataIrysFetchedFromGQL>;
+    uploadFileOrImageOnIrys(data: string): Promise<UploadIrysResult>;
+}
+
 export type SearchResult = {
     title: string;
     url: string;
@@ -1255,6 +1274,7 @@ export enum ServiceType {
     AWS_S3 = "aws_s3",
     BUTTPLUG = "buttplug",
     SLACK = "slack",
+    IRYS = "irys",
 }
 
 export enum LoggingLevel {
