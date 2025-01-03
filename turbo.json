@@ -4,25 +4,25 @@
         "check-types": {
             "dependsOn": ["build"]
         },
-        "@elizaos/agent#check-types": {
+        "@minyaos/agent#check-types": {
             "dependsOn": [
-                "@elizaos/plugin-solana#build",
-                "@elizaos/plugin-direct#build"
+                "@minyaos/plugin-solana#build",
+                "@minyaos/plugin-direct#build"
             ]
         },
         "build": {
             "outputs": ["dist/**"],
-            "dependsOn": ["^@elizaos/core#build"]
+            "dependsOn": ["^@minyaos/core#build"]
         },
-        "@elizaos/plugin-solana#build": {
+        "@minyaos/plugin-solana#build": {
             "outputs": ["dist/**"],
-            "dependsOn": ["@elizaos/plugin-trustdb#build"]
+            "dependsOn": ["@minyaos/plugin-trustdb#build"]
         },
-        "@elizaos/plugin-nft-generation#build": {
+        "@minyaos/plugin-nft-generation#build": {
             "outputs": ["dist/**"],
-            "dependsOn": ["@elizaos/plugin-node#build"]
+            "dependsOn": ["@minyaos/plugin-node#build"]
         },
-        "eliza-docs#build": {
+        "minya-docs#build": {
             "outputs": ["build/**"]
         },
         "dev": {
