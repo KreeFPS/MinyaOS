@@ -127,7 +127,4 @@ pnpm install --include=optional sharp
 - [GitHub Issues](https://github.com/minyaos/eliza/issues). Best for: bugs you encounter using Minya, and feature proposals.
 - [Discord](https://discord.gg/ai16z). Best for: sharing your applications and hanging out with the community.
 
-## Contributors
-
-<a href="https://github.com/minyaos/m/graphs/contributors">
 
