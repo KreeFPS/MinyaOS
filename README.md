@@ -1,4 +1,4 @@
-# Eliza 🤖
+# Minya 🤖
 
 <div align="center">
   <img src="minyaOS.jpg" alt="minyaOS.jpg" width="100%" />
@@ -25,9 +25,6 @@
 - ☁️ Supports many models (local Llama, OpenAI, Anthropic, Groq, etc.)
 - 📦 Just works!
 
-## Video Tutorials
-
-[AI Agent Dev School](https://www.youtube.com/watch?v=ArptLpQiKfI&list=PLx5pnFXdPTRzWla0RaOxALTSTnVq53fKL)
 
 ## 🎯 Use Cases
 
@@ -50,8 +47,8 @@
 ### Use the Starter (Recommended)
 
 ```bash
-git clone https://github.com/elizaos/eliza-starter.git
-cd eliza-starter
+git clone https://github.com/minyaos/minya-starter.git
+cd minya-starter
 cp .env.example .env
 pnpm i && pnpm build && pnpm start
 ```
@@ -61,9 +58,9 @@ Open another terminal and move to same directory and then run below command and 
 pnpm start:client
 ```
 
-Then read the [Documentation](https://elizaos.github.io/eliza/) to learn how to customize your Eliza.
+Then read the [Documentation](https://minya.github.io/minya/) to learn how to customize your Eliza.
 
-### Manually Start Eliza (Only recommended if you know what you are doing)
+### Manually Start minya (Only recommended if you know what you are doing)
 
 ```bash
 # Clone the repository
@@ -74,9 +71,9 @@ git clone https://github.com/elizaos/eliza.git
 git checkout $(git describe --tags --abbrev=0)
 ```
 
-### Start Eliza with Gitpod
+### Start Minya with Gitpod
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/elizaos/eliza/tree/main)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/minyaos/minya/tree/main)
 
 ### Edit the .env file
 
@@ -88,7 +85,7 @@ cp .env.example .env
 
 Note: .env is optional. If your planning to run multiple distinct agents, you can pass secrets through the character JSON
 
-### Automatically Start Eliza
+### Automatically Start MinyaOS
 
 This will run everything to setup the project and start the bot with the default character.
 
@@ -106,7 +103,7 @@ sh scripts/start.sh
 3. Connect with X (Twitter)
     - change `"clients": []` to `"clients": ["twitter"]` in the character file to connect with X
 
-### Manually Start Eliza
+### Manually Start Minya
 
 ```bash
 pnpm i
@@ -127,15 +124,10 @@ pnpm install --include=optional sharp
 
 ### Community & contact
 
-- [GitHub Issues](https://github.com/elizaos/eliza/issues). Best for: bugs you encounter using Eliza, and feature proposals.
+- [GitHub Issues](https://github.com/minyaos/eliza/issues). Best for: bugs you encounter using Minya, and feature proposals.
 - [Discord](https://discord.gg/ai16z). Best for: sharing your applications and hanging out with the community.
 
 ## Contributors
 
-<a href="https://github.com/elizaos/eliza/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=elizaos/eliza" />
-</a>
+<a href="https://github.com/minyaos/m/graphs/contributors">
 
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=elizaos/eliza&type=Date)](https://star-history.com/#elizaos/eliza&Date)
