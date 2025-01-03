@@ -1,6 +1,6 @@
-# Eliza
+# minya
 
-<img src="./docs/static/img/eliza_banner.jpg" alt="Eliza Banner" width="100%" />
+<img src="./docs/static/img/minya_banner.jpg" alt="minya Banner" width="100%" />
 
 ## 功能
 
@@ -12,7 +12,7 @@
 - ☁️ 多模型支持，包括Llama、OpenAI、Grok、Anthropic等
 - 📦 简单好用
 
-你可以用Eliza做什么？
+你可以用minya做什么？
 
 - 🤖 聊天机器人
 - 🕵️ 自主Agents
@@ -27,23 +27,23 @@
 - [Node.js 23+](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 - [pnpm](https://pnpm.io/installation)
 
-以下是两种基础的Eliza下载方案, 请根据情况自行选择。
+以下是两种基础的minya下载方案, 请根据情况自行选择。
 
 ## (A) 使用启动器(Starter): 推荐
 
 ```
-git clone https://github.com/elizaos/eliza-starter.git
-cd eliza-starter
+git clone https://github.com/minyaos/minya-starter.git
+cd minya-starter
 cp .env.example .env
 ```
 
-## (B) 手动启动Eliza: 仅在您知道自己在做什么时才推荐
+## (B) 手动启动minya: 仅在您知道自己在做什么时才推荐
 
 ```
-git clone https://github.com/elizaos/eliza.git
-cd eliza
+git clone https://github.com/minyaos/minya.git
+cd minya
 # 切换最新发布的版本(Checkout the latest release)
-# Eliza的迭代速度非常快, 所以我们建议经常性的切换到最新的发布版本以免出现问题(This project iterates fast, so we recommend checking out the latest release)
+# minya的迭代速度非常快, 所以我们建议经常性的切换到最新的发布版本以免出现问题(This project iterates fast, so we recommend checking out the latest release)
 git checkout $(git describe --tags --abbrev=0)
 ```
 
@@ -90,17 +90,17 @@ TWITTER_2FA_SECRET=          # Two-factor authentication
 sh scripts/start.sh
 
 
-(B) 手动启动Eliza
+(B) 手动启动minya
 pnpm i
 pnpm build
 pnpm start
 ```
 
-# 自定义Eliza
+# 自定义minya
 
 ### 添加常规行为
 
-为避免在核心目录中的 Git 冲突，我们建议将自定义操作添加到 custom_actions 目录中，并在 elizaConfig.yaml 文件中配置这些操作。可以参考 elizaConfig.example.yaml 文件中的示例。
+为避免在核心目录中的 Git 冲突，我们建议将自定义操作添加到 custom_actions 目录中，并在 minyaConfig.yaml 文件中配置这些操作。可以参考 minyaConfig.example.yaml 文件中的示例。
 
 ## 配置不同的大模型
 
